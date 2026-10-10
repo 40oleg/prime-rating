@@ -6,11 +6,14 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: pages
+  group: prime-source-publish
   cancel-in-progress: true
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -20,20 +23,31 @@ jobs:
       - run: npm ci
       - run: npm test -- --watch=false
       - run: npm run build -- --base-href /prime-rating/
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v4
+      - uses: actions/checkout@v6
         with:
-          path: dist/prime-rating/browser
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Publish
-        id: deployment
-        uses: actions/deploy-pages@v4
+          ref: gh-pages
+          path: .published
+      - name: Update published branch
+        shell: bash
+        run: |
+          git -C .published rm -r --ignore-unmatch .
+          cp -a dist/prime-rating/browser/. .published/
+          touch .published/.nojekyll
+          git -C .published config user.name 'github-actions[bot]'
+          git -C .published config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C .published add --all
+          if ! git -C .published diff --cached --quiet; then
+            git -C .published commit -m "deploy: Prime ${GITHUB_SHA}"
+            git -C .published push origin HEAD:gh-pages
+          fi
+      - name: Request Pages publication
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          curl --fail-with-body --silent --show-error \
+            -X POST \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            -d '{}' \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/builds"

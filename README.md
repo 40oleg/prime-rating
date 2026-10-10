@@ -45,6 +45,6 @@ Angular standalone, TypeScript, Angular service worker, Vitest.
 
 ## Публикация
 
-Workflow `.github/workflows/pages.yml` запускает тесты, собирает production PWA и публикует артефакт в GitHub Pages при push в main.
-В настройках репозитория Pages должен быть выбран GitHub Actions.
+Workflow `.github/workflows/pages.yml` запускает тесты, собирает production PWA, обновляет ветку `gh-pages` и запрашивает публикацию при push в main.
+В настройках репозитория Pages должен быть выбран источник `gh-pages`, папка `/`. Для первой публикации готовая проверенная сборка отправлена в эту ветку локально.
 Спецификация и план находятся в `docs/superpowers/`.
