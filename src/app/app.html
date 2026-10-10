@@ -56,7 +56,7 @@
         [attr.aria-expanded]="showDesigns()"
         aria-controls="design-gallery"
       >
-        {{ showDesigns() ? 'Свернуть' : 'Все 15 вариантов' }}
+        {{ showDesigns() ? 'Свернуть' : 'Все 3 темы' }}
       </button>
     </div>
     @if (showDesigns()) {
@@ -150,6 +150,102 @@
       <p class="intro">
         Задай ему силу и время действия.<br />Рейтинг изменится плавно, через ускорение.
       </p>
+      @if (eventLibrary().length) {
+        <section class="event-library" aria-label="События из истории">
+          <div class="library-heading">
+            <span>Быстро повторить</span>
+            <button
+              class="text-button"
+              type="button"
+              (click)="showEventLibrary.set(!showEventLibrary())"
+              [attr.aria-expanded]="showEventLibrary()"
+              aria-controls="event-comparison"
+            >
+              {{ showEventLibrary() ? 'Свернуть' : 'Сравнить с историей' }}
+            </button>
+          </div>
+          <div class="recent-events">
+            @for (saved of eventLibrary().slice(0, 3); track saved.event.id) {
+              <button class="secondary" type="button" (click)="useEvent(saved.event)">
+                {{ saved.event.name }}
+                <small
+                  >{{ number(saved.event.acceleration) }} ·
+                  {{ number(saved.event.durationDays) }} д.</small
+                >
+              </button>
+            }
+          </div>
+          @if (showEventLibrary()) {
+            <div id="event-comparison">
+              <p class="hint">
+                «Взять оценку» переносит силу и длительность, сохраняя твоё название. «Повторить» —
+                ещё и название. Сохранение — отдельно.
+              </p>
+              <label for="event-search">Найти в истории</label>
+              <input
+                id="event-search"
+                type="search"
+                [(ngModel)]="eventSearch"
+                placeholder="Например, кардио"
+              />
+              <div class="comparison-draft">
+                <strong>{{ name.trim() || 'Новое событие' }}</strong>
+                @if (!fieldErrors.strength && !fieldErrors.duration) {
+                  <span>{{ number(strength) }} балл/день² · {{ number(duration) }} дней</span>
+                  <span>Вклад в скорость: +{{ number(strength * duration) }} балл/день</span>
+                } @else {
+                  <span>Задай силу и длительность для сравнения.</span>
+                }
+              </div>
+              <ul class="comparison-list">
+                @for (saved of filteredLibrary; track saved.event.id) {
+                  <li>
+                    <div class="comparison-option">
+                      <strong>{{ saved.event.name }}</strong>
+                      <span
+                        >{{ number(saved.event.acceleration) }} балл/день² ·
+                        {{ number(saved.event.durationDays) }} дней</span
+                      >
+                      <span
+                        >Вклад в скорость: +{{
+                          number(saved.event.acceleration * saved.event.durationDays)
+                        }}
+                        балл/день</span
+                      >
+                      <small>{{ date(saved.event.at) }} · в истории: {{ saved.count }}</small>
+                      <div class="comparison-actions">
+                        <button
+                          type="button"
+                          class="secondary"
+                          (click)="useEventValues(saved.event)"
+                          [attr.aria-label]="'Взять оценку: ' + saved.event.name"
+                        >
+                          Взять оценку
+                        </button>
+                        <button
+                          type="button"
+                          class="text-button"
+                          (click)="useEvent(saved.event)"
+                          [attr.aria-label]="'Повторить из сравнения: ' + saved.event.name"
+                        >
+                          Повторить ↗
+                        </button>
+                      </div>
+                    </div>
+                  </li>
+                } @empty {
+                  <li class="hint">Таких событий пока нет.</li>
+                }
+              </ul>
+              <p class="hint">
+                Вклад = сила × длительность, без гравитации. Это ориентир для сравнения, а не число
+                добавленных баллов; у короткого сильного и долгого слабого события разная
+                траектория.
+              </p>
+            </div>
+          }
+        </section>
+      }
       <form (ngSubmit)="save()" (keydown.enter)="$event.preventDefault(); save()" novalidate>
         <label for="event-name">Что произошло?</label>
         <input
@@ -244,6 +340,14 @@
               <div>
                 <h3>{{ event.name }}</h3>
                 <p>{{ date(event.at) }} · {{ event.durationDays }} дней</p>
+                <button
+                  type="button"
+                  class="text-button repeat-event"
+                  (click)="useEvent(event)"
+                  [attr.aria-label]="'Повторить: ' + event.name"
+                >
+                  Повторить ↗
+                </button>
               </div>
               <span class="event-strength">+{{ event.acceleration }}<small>балл/день²</small></span>
             </li>

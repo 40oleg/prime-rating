@@ -103,13 +103,93 @@ describe('App', () => {
     expect(fixture.nativeElement.querySelector('[data-testid="countdown"]')).toBeNull();
     fixture.destroy();
   });
-  it('restores a saved design and offers all fifteen options', () => {
+  it('restores a saved design and offers the three selected themes', () => {
     localStorage.setItem('prime-design:v1', 'studio');
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     const root = fixture.nativeElement as HTMLElement;
     expect(root.getAttribute('data-design')).toBe('studio');
-    expect(root.querySelectorAll('#design-choice option')).toHaveLength(15);
+    expect(root.querySelectorAll('#design-choice option')).toHaveLength(3);
+    fixture.destroy();
+  });
+  it('falls back to telemetry when a removed theme was saved', () => {
+    localStorage.setItem('prime-design:v1', 'mint');
+    window.history.replaceState(null, '', '?design=nord');
+    const fixture = TestBed.createComponent(App);
+    expect(fixture.componentInstance.design().id).toBe('console');
+    expect(fixture.componentInstance.designs.map((d) => d.id)).toEqual([
+      'studio',
+      'console',
+      'blueprint',
+    ]);
+    fixture.destroy();
+  });
+  it('reuses a saved event as an editable draft and saves a new occurrence without changing the original', async () => {
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+    const now = Date.now();
+    app.store.importJson(
+      JSON.stringify({
+        version: 1,
+        startedAt: now - DAY,
+        events: [
+          {
+            id: 'old-cardio',
+            name: 'Кардио',
+            at: now - 10000,
+            acceleration: 0.02,
+            durationDays: 7,
+          },
+          {
+            id: 'repeat-cardio',
+            name: 'Кардио',
+            at: now - 5000,
+            acceleration: 0.02,
+            durationDays: 7,
+          },
+          {
+            id: 'long-cardio',
+            name: 'Кардио',
+            at: now - 2000,
+            acceleration: 0.03,
+            durationDays: 14,
+          },
+        ],
+      }),
+    );
+    await fixture.whenStable();
+    expect(app.eventLibrary()).toHaveLength(2);
+    expect(app.eventLibrary()[1].count).toBe(2);
+    const original = app.store.exportJson();
+    app.showEventLibrary.set(true);
+    app.eventSearch = 'карДИО';
+    await fixture.whenStable();
+    const options = fixture.nativeElement.querySelectorAll(
+      '.comparison-actions .text-button',
+    ) as NodeListOf<HTMLButtonElement>;
+    expect(options).toHaveLength(2);
+    options[1].click();
+    await fixture.whenStable();
+    expect([app.name, app.strength, app.duration]).toEqual(['Кардио', 0.02, 7]);
+    expect(app.store.exportJson()).toBe(original);
+    app.name = 'Новое занятие';
+    (
+      fixture.nativeElement.querySelector('.comparison-actions .secondary') as HTMLButtonElement
+    ).click();
+    await fixture.whenStable();
+    expect(app.name).toBe('Новое занятие');
+    expect([app.strength, app.duration]).toEqual([0.03, 14]);
+    app.strength = 0.04;
+    await fixture.whenStable();
+    (fixture.nativeElement.querySelector('[data-testid=save-event]') as HTMLButtonElement).click();
+    await fixture.whenStable();
+    const events = app.store.data().events;
+    expect(events).toHaveLength(4);
+    expect(events[0].acceleration).toBe(0.02);
+    expect(events[3].acceleration).toBe(0.04);
+    expect(events[3].at).toBeGreaterThan(events[2].at);
+    expect(events[3].id).not.toBe(events[0].id);
+    expect(JSON.parse(localStorage.getItem('prime-rating:v1')!).events).toHaveLength(4);
     fixture.destroy();
   });
   it('switches all designs through the selector without modifying saved rating history', async () => {

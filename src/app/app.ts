@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RatingStore } from './rating/rating.store';
-import { appendEvent, DAY, evaluate } from './rating/rating.model';
+import { appendEvent, DAY, evaluate, PrimeEvent } from './rating/rating.model';
 import { Motion } from './motion/motion';
 import { DESIGNS, findDesign, initialDesign } from './designs';
 
@@ -21,7 +21,7 @@ interface InstallPrompt extends Event {
   selector: 'app-root',
   imports: [FormsModule, Motion],
   templateUrl: './app.html',
-  styleUrl: './app.css',
+  styleUrls: ['./app.css', './event-library.css'],
   host: {
     '[attr.data-design]': 'design().id',
     '[attr.data-layout]': 'design().layout',
@@ -64,6 +64,50 @@ export class App {
   importText = '';
   importName = '';
   readonly reversedEvents = computed(() => [...this.store.data().events].reverse());
+  readonly showEventLibrary = signal(false);
+  eventSearch = '';
+  readonly eventLibrary = computed(() => {
+    const unique = new Map<string, { event: PrimeEvent; count: number }>();
+    for (const event of this.reversedEvents()) {
+      const key = JSON.stringify([
+        event.name.trim().toLocaleLowerCase('ru'),
+        event.acceleration,
+        event.durationDays,
+      ]);
+      const saved = unique.get(key);
+      if (saved) saved.count++;
+      else unique.set(key, { event, count: 1 });
+    }
+    return [...unique.values()];
+  });
+  get filteredLibrary() {
+    const query = this.eventSearch.trim().toLocaleLowerCase('ru');
+    return this.eventLibrary().filter(({ event }) =>
+      event.name.toLocaleLowerCase('ru').includes(query),
+    );
+  }
+  useEvent(event: PrimeEvent) {
+    const fromHistory = this.mode() === 'history';
+    this.name = event.name;
+    this.useEventValues(event);
+    if (fromHistory) {
+      requestAnimationFrame(() => {
+        const input = this.dialog().nativeElement.querySelector<HTMLInputElement>('#event-name');
+        input?.focus({ preventScroll: true });
+        input?.scrollIntoView({ block: 'center' });
+      });
+    }
+  }
+  useEventValues(event: PrimeEvent) {
+    this.strength = event.acceleration;
+    this.duration = event.durationDays;
+    this.mode.set('event');
+    this.submitted = false;
+    this.message = '';
+  }
+  number(value: number) {
+    return new Intl.NumberFormat('ru-RU', { maximumSignificantDigits: 6 }).format(value);
+  }
   get fieldErrors() {
     return {
       name: !this.name.trim() || this.name.length > 120,
@@ -141,6 +185,8 @@ export class App {
     this.submitted = false;
     this.importText = '';
     this.importName = '';
+    this.eventSearch = '';
+    this.showEventLibrary.set(false);
     this.dialog().nativeElement.showModal();
   }
   close() {

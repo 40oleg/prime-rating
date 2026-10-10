@@ -1,0 +1,121 @@
+.event-library {
+  margin: 0 0 24px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.library-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+}
+.library-heading .text-button {
+  font-size: 11px;
+}
+.recent-events {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.recent-events button {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+.recent-events small {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 10px;
+}
+.comparison-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.comparison-actions .text-button {
+  font-size: 11px;
+}
+#event-comparison > label {
+  margin-top: 16px;
+}
+.comparison-draft,
+.comparison-option {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 13px;
+  font-size: 11px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.comparison-draft {
+  border-left: 3px solid var(--accent);
+  background: var(--bg);
+  margin: 14px 0;
+}
+.comparison-draft strong,
+.comparison-option strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.comparison-draft span,
+.comparison-option span {
+  color: var(--muted);
+}
+.comparison-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 260px;
+  overflow-y: auto;
+}
+.comparison-list li + li {
+  margin-top: 8px;
+}
+.comparison-option {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+}
+.comparison-option:hover {
+  border-color: var(--accent);
+  background: var(--bg);
+}
+.comparison-option small {
+  font-size: 10px;
+  color: var(--accent);
+}
+.repeat-event {
+  font-size: 11px;
+  padding: 8px 0 0;
+  color: var(--accent);
+}
+@media (max-width: 420px) {
+  .library-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0;
+  }
+  .history li {
+    flex-wrap: wrap;
+  }
+  .history li > div {
+    min-width: 0;
+    flex: 1;
+  }
+  .event-strength {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
