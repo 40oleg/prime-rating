@@ -8,7 +8,7 @@
 
 **Tech Stack:** Angular CLI текущей стабильной версии, TypeScript, Angular service worker, штатный тестовый runner CLI, GitHub Pages.
 
-**Spec:** [prime-design.md](prime-design.md).
+**Spec:** [prime-design.md](../specs/2026-10-10-prime-design.md).
 
 ## Global Constraints
 
