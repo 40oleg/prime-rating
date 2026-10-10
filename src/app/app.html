@@ -27,11 +27,81 @@
       </button>
     </nav>
   </header>
+  <section class="design-switcher" aria-label="Выбор дизайна">
+    <div class="design-toolbar">
+      <label for="design-choice"
+        >Дизайн
+        <select
+          id="design-choice"
+          aria-label="Дизайн"
+          name="design"
+          [ngModel]="design().id"
+          (ngModelChange)="setDesign($event)"
+        >
+          @for (option of designs; track option.id; let i = $index) {
+            <option [value]="option.id">
+              {{ (i + 1).toString().padStart(2, '0') }} · {{ option.name }}
+            </option>
+          }
+        </select>
+      </label>
+      <div class="design-arrows">
+        <button type="button" (click)="stepDesign(-1)" aria-label="Предыдущий дизайн">←</button
+        ><button type="button" (click)="stepDesign(1)" aria-label="Следующий дизайн">→</button>
+      </div>
+      <button
+        class="gallery-toggle"
+        type="button"
+        (click)="showDesigns.set(!showDesigns())"
+        [attr.aria-expanded]="showDesigns()"
+        aria-controls="design-gallery"
+      >
+        {{ showDesigns() ? 'Свернуть' : 'Все 15 вариантов' }}
+      </button>
+    </div>
+    @if (showDesigns()) {
+      <div id="design-gallery" class="design-gallery">
+        @for (option of designs; track option.id; let i = $index) {
+          <button
+            class="design-option"
+            type="button"
+            (click)="setDesign(option.id)"
+            [attr.aria-pressed]="design().id === option.id"
+            [attr.data-testid]="'design-' + option.id"
+          >
+            <span
+              class="design-thumbnail"
+              aria-hidden="true"
+              [attr.data-layout]="option.layout"
+              [style.--preview-bg]="option.colors.bg"
+              [style.--preview-ink]="option.colors.ink"
+              [style.--preview-accent]="option.colors.accent"
+              [style.--preview-surface]="option.colors.surface"
+              ><span class="preview-rating">10,0</span><span class="preview-line"></span
+              ><span class="preview-metrics"></span
+            ></span>
+            <span class="design-option-name"
+              >{{ (i + 1).toString().padStart(2, '0') }} · {{ option.name }}</span
+            ><span class="design-description">{{ option.description }}</span>
+          </button>
+        }
+      </div>
+    }
+  </section>
   <main>
     <div class="ambient" aria-hidden="true"></div>
     <div class="dashboard">
       <section class="rating-section" aria-label="Текущий prime-рейтинг">
         <p class="eyebrow">ТВОЯ ТЕКУЩАЯ ФОРМА</p>
+        @if (design().layout === 'editorial') {
+          <p class="editorial-heading">Каждый день.<br />Чуть ближе к себе.</p>
+        }
+        @if (design().layout === 'terminal') {
+          <p class="layout-heading">&gt; prime.status / live</p>
+        }
+        @if (design().layout === 'newspaper') {
+          <p class="layout-heading">ХРОНИКА ЛИЧНОЙ ФОРМЫ</p>
+        }
         <div class="rating-display">
           <div class="instrument-ring" aria-hidden="true"><span></span></div>
           <h1 class="rating" data-testid="rating">{{ formatted() }}</h1>

@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { RatingStore } from './rating/rating.store';
 import { appendEvent, DAY, evaluate } from './rating/rating.model';
 import { Motion } from './motion/motion';
+import { DESIGNS, findDesign, initialDesign } from './designs';
 
 interface InstallPrompt extends Event {
   prompt(): Promise<void>;
@@ -21,9 +22,28 @@ interface InstallPrompt extends Event {
   imports: [FormsModule, Motion],
   templateUrl: './app.html',
   styleUrl: './app.css',
-  host: { 'data-design': 'console' },
+  host: {
+    '[attr.data-design]': 'design().id',
+    '[attr.data-layout]': 'design().layout',
+    '[style.color-scheme]': 'design().scheme',
+    '[style.font-family]': 'design().font',
+    '[style.--hero-font]': 'design().heroFont',
+    '[style.--bg]': 'design().colors.bg',
+    '[style.--surface]': 'design().colors.surface',
+    '[style.--ink]': 'design().colors.ink',
+    '[style.--accent]': 'design().colors.accent',
+    '[style.--muted]': 'design().colors.muted',
+    '[style.--quiet]': 'design().colors.muted',
+    '[style.--line]': 'design().colors.line',
+    '[style.--fall]': 'design().colors.fall',
+    '[style.--button-ink]': 'design().colors.buttonInk',
+    '[style.--error]': 'design().scheme === "light" ? "#a03930" : "#ffc2b5"',
+  },
 })
 export class App {
+  readonly designs = DESIGNS;
+  readonly design = signal(initialDesign());
+  readonly showDesigns = signal(false);
   readonly store = inject(RatingStore);
   readonly now = signal(Date.now());
   readonly state = computed(() => evaluate(this.store.data(), this.now()));
@@ -73,6 +93,9 @@ export class App {
   }
   constructor() {
     const destroy = inject(DestroyRef);
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', this.design().colors.bg);
     const tick = () => this.now.set(Date.now());
     const interval = window.setInterval(tick, 1000);
     const install = (e: Event) => {
@@ -92,6 +115,25 @@ export class App {
       window.removeEventListener('appinstalled', installed);
       document.removeEventListener('visibilitychange', tick);
     });
+  }
+  setDesign(id: string) {
+    const next = findDesign(id);
+    if (!next) return;
+    this.design.set(next);
+    const url = new URL(window.location.href);
+    url.searchParams.set('design', next.id);
+    window.history.replaceState(null, '', url);
+    try {
+      localStorage.setItem('prime-design:v1', next.id);
+    } catch {
+      /* Optional preference. */
+    }
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+    themeColor?.setAttribute('content', next.colors.bg);
+  }
+  stepDesign(step: number) {
+    const index = this.designs.findIndex((design) => design.id === this.design().id);
+    this.setDesign(this.designs[(index + step + this.designs.length) % this.designs.length].id);
   }
   open(mode: 'event' | 'history' | 'about') {
     this.mode.set(mode);

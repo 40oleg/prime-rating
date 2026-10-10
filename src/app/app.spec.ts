@@ -6,6 +6,7 @@ import { DAY } from './rating/rating.model';
 describe('App', () => {
   beforeEach(async () => {
     localStorage.clear();
+    window.history.replaceState(null, '', window.location.pathname);
     await TestBed.configureTestingModule({
       imports: [App],
     }).compileComponents();
@@ -102,14 +103,40 @@ describe('App', () => {
     expect(fixture.nativeElement.querySelector('[data-testid="countdown"]')).toBeNull();
     fixture.destroy();
   });
-  it('uses the chosen console design even with an old saved preference', () => {
+  it('restores a saved design and offers all fifteen options', () => {
     localStorage.setItem('prime-design:v1', 'studio');
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     const root = fixture.nativeElement as HTMLElement;
+    expect(root.getAttribute('data-design')).toBe('studio');
+    expect(root.querySelectorAll('#design-choice option')).toHaveLength(15);
+    fixture.destroy();
+  });
+  it('switches all designs through the selector without modifying saved rating history', async () => {
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    const app = fixture.componentInstance;
+    const root = fixture.nativeElement as HTMLElement;
+    const history = app.store.exportJson();
+    const select = root.querySelector('#design-choice') as HTMLSelectElement;
     expect(root.getAttribute('data-design')).toBe('console');
-    expect(root.querySelector('.design-choices')).toBeNull();
-    expect(root.querySelector('.instrument-ring')).toBeTruthy();
+    for (const design of app.designs) {
+      select.value = design.id;
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+      await fixture.whenStable();
+      expect(root.getAttribute('data-design')).toBe(design.id);
+      expect(root.getAttribute('data-layout')).toBe(design.layout);
+      expect(localStorage.getItem('prime-design:v1')).toBe(design.id);
+      expect(new URLSearchParams(window.location.search).get('design')).toBe(design.id);
+      expect(app.store.exportJson()).toBe(history);
+      expect(root.querySelector('[data-testid="acceleration"]')).toBeTruthy();
+    }
+    app.stepDesign(1);
+    fixture.detectChanges();
+    expect(app.design().id).toBe(app.designs[0].id);
+    app.stepDesign(-1);
+    fixture.detectChanges();
+    expect(app.design().id).toBe(app.designs.at(-1)?.id);
     fixture.destroy();
   });
 });
