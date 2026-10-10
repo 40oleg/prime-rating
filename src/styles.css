@@ -11,6 +11,8 @@
   --muted: #9ca592;
   --quiet: #798271;
   --line: #343a2f;
+  --surface: #1c201b;
+  --fall: #d8a48e;
   font-family: system-prime, 'Segoe UI', Arial, sans-serif;
   background: var(--bg);
   color: var(--ink);
@@ -31,4 +33,244 @@ input {
 }
 button {
   -webkit-tap-highlight-color: transparent;
+}
+
+/* Three complete visual directions share the same motion model and saved history. */
+app-root {
+  background: var(--bg);
+  color: var(--ink);
+}
+app-root[data-design='studio'] {
+  color-scheme: light;
+  --bg: #f4f0e7;
+  --surface: #fffaf1;
+  --ink: #282a27;
+  --accent: #a34b36;
+  --muted: #676b60;
+  --quiet: #74776e;
+  --line: #d8d8cb;
+  --fall: #858e81;
+  --button-ink: #fffaf1;
+  --error: #a43d31;
+}
+app-root[data-design='console'] {
+  color-scheme: dark;
+  --bg: #0e101b;
+  --surface: #181c2c;
+  --ink: #f1f1ff;
+  --accent: #b0a5ff;
+  --muted: #aaaec5;
+  --quiet: #9298b6;
+  --line: #30364b;
+  --fall: #e8aa91;
+  --button-ink: #141329;
+}
+app-root[data-design='orbit'] .motion-panel {
+  padding: 26px 0 0;
+  border-top: 1px solid var(--line);
+}
+app-root[data-design='studio'] .shell {
+  padding: 35px 56px;
+}
+app-root[data-design='studio'] .brand {
+  font-family: Georgia, serif;
+  font-size: 34px;
+  font-weight: 400;
+}
+app-root[data-design='studio'] .design-choices {
+  margin-top: 16px;
+}
+app-root[data-design='studio'] .design-choices button {
+  border-radius: 5px;
+}
+app-root[data-design='studio'] main {
+  padding: 56px 0 70px;
+}
+app-root[data-design='studio'] .ambient {
+  display: none;
+}
+app-root[data-design='studio'] .dashboard {
+  width: min(100%, 1080px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 100px;
+  align-items: start;
+}
+app-root[data-design='studio'] .rating-section {
+  text-align: left;
+  padding: 0;
+}
+app-root[data-design='studio'] .editorial-heading {
+  display: block;
+  font-family: Georgia, serif;
+  font-size: clamp(25px, 3.4vw, 45px);
+  line-height: 1.18;
+  letter-spacing: -1.8px;
+  margin: 22px 0 38px;
+}
+app-root[data-design='studio'] .rating {
+  font-family: Georgia, serif;
+  font-size: clamp(70px, 11vw, 150px);
+  letter-spacing: -7px;
+  margin-bottom: 26px;
+}
+app-root[data-design='studio'] .direction {
+  justify-content: flex-start;
+}
+app-root[data-design='studio'] .primary {
+  border-radius: 4px;
+  padding: 16px 25px;
+}
+app-root[data-design='studio'] .add-button {
+  margin-top: 35px;
+}
+app-root[data-design='studio'] .caption {
+  max-width: 250px;
+  line-height: 1.7;
+}
+app-root[data-design='studio'] footer {
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+}
+app-root[data-design='console'] .shell {
+  padding: 32px 48px;
+}
+app-root[data-design='console'] .brand {
+  font-family: Consolas, monospace;
+  font-size: 26px;
+  font-weight: 400;
+}
+app-root[data-design='console'] .design-choices {
+  margin-top: 20px;
+}
+app-root[data-design='console'] .design-choices button {
+  border-radius: 8px;
+}
+app-root[data-design='console'] main {
+  padding: 50px 0;
+}
+app-root[data-design='console'] .ambient {
+  width: 850px;
+  height: 700px;
+  background: radial-gradient(ellipse, #8175d017, transparent 67%);
+}
+app-root[data-design='console'] .dashboard {
+  width: min(100%, 1080px);
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+  gap: 48px;
+  align-items: center;
+}
+app-root[data-design='console'] .rating-section {
+  padding: 0;
+}
+app-root[data-design='console'] .eyebrow {
+  margin-bottom: 20px;
+}
+app-root[data-design='console'] .rating-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 330px;
+  height: 330px;
+  max-width: 100%;
+  margin: 0 auto 25px;
+}
+app-root[data-design='console'] .instrument-ring {
+  display: block;
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: radial-gradient(circle, #b0a5ff07, transparent 65%);
+}
+app-root[data-design='console'] .instrument-ring::before {
+  content: '';
+  position: absolute;
+  inset: 16px;
+  border: 3px solid var(--line);
+  border-top-color: var(--accent);
+  border-right-color: var(--accent);
+  border-radius: 50%;
+  transform: rotate(-40deg);
+}
+app-root[data-design='console'] .instrument-ring::after {
+  content: '';
+  position: absolute;
+  inset: 32px;
+  border: 1px dashed var(--line);
+  border-radius: 50%;
+}
+app-root[data-design='console'] .rating {
+  position: relative;
+  font-family: Consolas, monospace;
+  font-size: 88px;
+  letter-spacing: -6px;
+  margin: 0 15px 15px;
+  max-width: calc(100% - 40px);
+}
+app-root[data-design='console'] .instrument-unit {
+  display: block;
+  position: relative;
+  font-family: Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--muted);
+}
+app-root[data-design='console'] .primary {
+  border-radius: 12px;
+}
+app-root[data-design='console'] footer {
+  font-family: Consolas, monospace;
+}
+@media (max-width: 900px) {
+  app-root[data-design='studio'] .shell,
+  app-root[data-design='console'] .shell {
+    padding: 28px;
+  }
+  app-root[data-design='studio'] .dashboard {
+    gap: 36px;
+  }
+  app-root[data-design='console'] .dashboard {
+    gap: 24px;
+  }
+  app-root[data-design='console'] .rating-display {
+    width: 270px;
+    height: 270px;
+  }
+  app-root[data-design='console'] .rating {
+    font-size: 72px;
+  }
+}
+@media (max-width: 700px) {
+  app-root[data-design='studio'] .shell,
+  app-root[data-design='console'] .shell {
+    padding: 24px;
+  }
+  app-root[data-design='studio'] .dashboard,
+  app-root[data-design='console'] .dashboard {
+    grid-template-columns: 1fr;
+    width: min(100%, 500px);
+    gap: 40px;
+  }
+  app-root[data-design='studio'] main,
+  app-root[data-design='console'] main {
+    padding: 30px 0 40px;
+  }
+  app-root[data-design='studio'] .rating {
+    font-size: 108px;
+  }
+  app-root[data-design='studio'] .editorial-heading {
+    font-size: 36px;
+    margin-bottom: 25px;
+  }
+  app-root[data-design='studio'] .rating-section {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 30px;
+  }
+  app-root[data-design='console'] .rating-display {
+    width: 275px;
+    height: 275px;
+  }
 }

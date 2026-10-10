@@ -1,0 +1,89 @@
+<section class="motion-panel" aria-label="Движение рейтинга в реальном времени">
+  <div class="motion-heading">
+    <span class="panel-title">Движение</span>
+    <span class="live"
+      ><span class="live-dot" aria-hidden="true"></span> LIVE <time>{{ clock() }}</time></span
+    >
+  </div>
+  <div class="metrics">
+    <div class="metric acceleration-metric">
+      <span class="metric-label">Ускорение</span>
+      <strong
+        data-testid="acceleration"
+        [class.positive]="state().acceleration > 0"
+        [class.negative]="state().acceleration < 0"
+        >{{ signed(state().acceleration) }}</strong
+      >
+      <span class="unit">балл/день²</span>
+      <span class="metric-note" data-testid="acceleration-trend">{{ accelerationTrend() }}</span>
+    </div>
+    <div class="metric speed-metric">
+      <span class="metric-label">Скорость</span>
+      <strong data-testid="velocity">{{ signed(state().velocity, 10) }}</strong>
+      <span class="unit">балл/день</span>
+      <span class="metric-note">{{ speedTrend() }}</span>
+    </div>
+  </div>
+  <div class="force-balance">
+    <div class="force-labels">
+      <span>Импульсы {{ signed(thrust()) }}</span
+      ><span>Гравитация {{ signed(-gravity()) }}</span>
+    </div>
+    <div
+      class="balance-track"
+      role="img"
+      [attr.aria-label]="'Импульсы ' + signed(thrust()) + ', гравитация ' + signed(-gravity())"
+    >
+      <span class="balance-fill" [style.width.%]="gauge()"></span
+      ><span class="balance-center"></span>
+    </div>
+  </div>
+  <div class="forecast-heading">
+    <span>Ускорение · прогноз на 30 дней</span><span>Без новых событий</span>
+  </div>
+  <div class="chart-extents">
+    <span>{{ signed(chart().high) }}</span
+    ><span>{{ signed(chart().low) }} балл/день²</span>
+  </div>
+  <svg
+    class="acceleration-chart"
+    viewBox="0 0 600 140"
+    role="img"
+    aria-labelledby="acceleration-chart-title"
+    preserveAspectRatio="none"
+  >
+    <title id="acceleration-chart-title">
+      Прогноз ускорения на 30 дней. При завершении событий ускорение падает, при достижении нуля
+      становится нулевым.
+    </title>
+    <path
+      class="chart-grid"
+      d="M12 18H588 M12 68H588 M12 118H588 M156 18V118 M300 18V118 M444 18V118"
+    />
+    <path class="zero-line" [attr.d]="'M12 ' + chart().zeroY + ' H588'" />
+    <polyline class="acceleration-line" [attr.points]="chart().path" />
+    <circle class="now-point" cx="12" [attr.cy]="chart().nowY" r="4" />
+  </svg>
+  <div class="chart-axis"><span>Сейчас</span><span>15 дней</span><span>30 дней</span></div>
+  <div class="next-change">
+    @if (nextExpiry() !== null) {
+      <span
+        >До завершения ближайшего импульса
+        <strong data-testid="countdown">{{ remaining() }}</strong></span
+      >
+      <span>Ускорение ↓ на {{ signed(nextDrop()).replace('+', '') }}</span>
+    } @else if (state().grounded) {
+      <span>Покой · новое событие запустит движение</span>
+    } @else {
+      <span>Активных импульсов нет · действует гравитация</span>
+    }
+  </div>
+  <div class="precise-rating">
+    <span>Рейтинг с точностью до 10 знаков</span
+    ><span data-testid="precise-rating">{{ preciseRating() }}</span>
+  </div>
+  <p class="motion-explanation">
+    Обновляется каждую секунду. Ускорение меняется при событиях и их завершении; скорость и рейтинг
+    — непрерывно.
+  </p>
+</section>

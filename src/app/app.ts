@@ -10,6 +10,22 @@ import {
 import { FormsModule } from '@angular/forms';
 import { RatingStore } from './rating/rating.store';
 import { appendEvent, DAY, evaluate } from './rating/rating.model';
+import { Motion } from './motion/motion';
+
+type Design = 'orbit' | 'studio' | 'console';
+function initialDesign(): Design {
+  const valid = (value: string | null): value is Design =>
+    ['orbit', 'studio', 'console'].includes(value ?? '');
+  const query = new URLSearchParams(window.location.search).get('design');
+  if (valid(query)) return query;
+  try {
+    const saved = localStorage.getItem('prime-design:v1');
+    if (valid(saved)) return saved;
+  } catch {
+    /* Design preferences must never prevent reading the rating. */
+  }
+  return 'orbit';
+}
 
 interface InstallPrompt extends Event {
   prompt(): Promise<void>;
@@ -17,11 +33,13 @@ interface InstallPrompt extends Event {
 }
 @Component({
   selector: 'app-root',
-  imports: [FormsModule],
+  imports: [FormsModule, Motion],
   templateUrl: './app.html',
   styleUrl: './app.css',
+  host: { '[attr.data-design]': 'design()' },
 })
 export class App {
+  readonly design = signal<Design>(initialDesign());
   readonly store = inject(RatingStore);
   readonly now = signal(Date.now());
   readonly state = computed(() => evaluate(this.store.data(), this.now()));
@@ -90,6 +108,17 @@ export class App {
       window.removeEventListener('appinstalled', installed);
       document.removeEventListener('visibilitychange', tick);
     });
+  }
+  setDesign(design: Design) {
+    this.design.set(design);
+    const url = new URL(window.location.href);
+    url.searchParams.set('design', design);
+    window.history.replaceState(null, '', url);
+    try {
+      localStorage.setItem('prime-design:v1', design);
+    } catch {
+      /* Optional preference. */
+    }
   }
   open(mode: 'event' | 'history' | 'about') {
     this.mode.set(mode);

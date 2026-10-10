@@ -2,6 +2,50 @@
   display: block;
   min-height: 100svh;
 }
+.dashboard {
+  width: min(100%, 600px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.design-choices {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin: 28px auto 8px;
+  position: relative;
+  z-index: 1;
+}
+.design-choices button {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid transparent;
+  border-radius: 24px;
+  padding: 10px 15px;
+  font-size: 11px;
+  cursor: pointer;
+}
+.design-choices button span {
+  opacity: 0.6;
+  margin-right: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.design-choices button[aria-pressed='true'] {
+  color: var(--ink);
+  border-color: var(--line);
+  background: var(--surface);
+}
+.rating-display {
+  position: relative;
+}
+.editorial-heading {
+  display: none;
+}
+.instrument-ring,
+.instrument-unit {
+  display: none;
+}
 .shell {
   min-height: 100svh;
   display: flex;
@@ -74,6 +118,7 @@ main {
   place-items: center;
   position: relative;
   min-height: 480px;
+  padding-bottom: 30px;
 }
 .ambient {
   position: absolute;
@@ -88,7 +133,7 @@ main {
   text-align: center;
   position: relative;
   width: 100%;
-  padding: 60px 0 80px;
+  padding: 32px 0 36px;
 }
 .eyebrow {
   font-size: 10px;
@@ -98,7 +143,7 @@ main {
   margin: 0 0 28px;
 }
 .rating {
-  font-size: clamp(72px, 14vw, 164px);
+  font-size: clamp(72px, 12vw, 126px);
   line-height: 1;
   letter-spacing: -0.075em;
   font-weight: 400;
@@ -136,7 +181,7 @@ main {
   justify-content: center;
   gap: 12px;
   background: var(--accent);
-  color: #172014;
+  color: var(--button-ink, #172014);
   border: 0;
   border-radius: 13px;
   padding: 15px 23px;
@@ -150,11 +195,11 @@ main {
   min-height: 50px;
 }
 .primary:hover {
-  background: #d8f4c0;
+  filter: brightness(1.08);
   transform: translateY(-1px);
 }
 .add-button {
-  margin-top: 48px;
+  margin-top: 24px;
 }
 .add-button > span {
   font-size: 21px;
@@ -194,9 +239,9 @@ footer {
   color: var(--ink);
 }
 dialog {
-  background: #1c201b;
+  background: var(--surface);
   color: var(--ink);
-  border: 1px solid #393e34;
+  border: 1px solid var(--line);
   border-radius: 24px;
   padding: 0;
   width: min(520px, calc(100vw - 28px));
@@ -249,14 +294,14 @@ h3 {
 label {
   display: block;
   font-size: 12px;
-  color: #ced4c6;
+  color: var(--ink);
   margin-bottom: 10px;
 }
 input {
   font: inherit;
   color: var(--ink);
-  background: #141813;
-  border: 1px solid #383e32;
+  background: var(--bg);
+  border: 1px solid var(--line);
   border-radius: 10px;
   width: 100%;
   padding: 13px 14px;
@@ -268,7 +313,7 @@ input:focus {
   box-shadow: 0 0 0 2px #c6e8aa17;
 }
 input::placeholder {
-  color: #6d7566;
+  color: var(--quiet);
 }
 input[aria-invalid='true'] {
   border-color: #e4a59b;
@@ -304,8 +349,8 @@ input[aria-invalid='true'] {
   margin: 8px 0 0;
 }
 .forecast {
-  background: #c6e8aa07;
-  border: 1px solid #c6e8aa14;
+  background: color-mix(in srgb, var(--accent) 4%, transparent);
+  border: 1px solid var(--line);
   border-radius: 13px;
   padding: 15px 18px;
   margin: 25px 0;
@@ -337,7 +382,7 @@ input[aria-invalid='true'] {
 }
 .error {
   font-size: 11px;
-  color: #edb1a8;
+  color: var(--error, #edb1a8);
   line-height: 1.6;
   margin: 8px 0;
 }
@@ -375,7 +420,7 @@ input[aria-invalid='true'] {
   border-bottom: 1px solid var(--line);
 }
 .event-sign {
-  background: #c6e8aa0c;
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
   color: var(--accent);
   width: 36px;
   height: 36px;
@@ -428,7 +473,7 @@ input[aria-invalid='true'] {
 }
 .secondary {
   background: transparent;
-  border: 1px solid #454d3c;
+  border: 1px solid var(--line);
   color: var(--ink);
   border-radius: 10px;
   font: inherit;
@@ -502,14 +547,14 @@ input[aria-invalid='true'] {
     letter-spacing: 2px;
   }
   .rating-section {
-    padding: 65px 0 70px;
+    padding: 30px 0;
   }
   .ambient {
     width: 430px;
     height: 430px;
   }
   .add-button {
-    margin-top: 40px;
+    margin-top: 24px;
   }
   footer {
     font-size: 10px;
@@ -533,6 +578,13 @@ input[aria-invalid='true'] {
   }
   .data-actions {
     flex-wrap: wrap;
+  }
+  .design-choices {
+    gap: 0;
+    margin-top: 24px;
+  }
+  .design-choices button {
+    padding: 10px 11px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
