@@ -1,59 +1,50 @@
-# PrimeRating
+# Prime
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.2.
+Личный рейтинг с инерцией: события меняют ускорение, рейтинг показывает текущую высоту.
 
-## Development server
+Приложение: https://40oleg.github.io/prime-rating/
 
-To start a local development server, run:
+## Как работает
 
-```bash
-ng serve
+Старт: рейтинг 10, скорость 0. Время постоянно тянет рейтинг вниз.
+Для каждого события вручную задаются положительное ускорение в баллах/день² и длительность в днях, от 0 до 730 (границы исключены).
+Действующие ускорения складываются. Высота и скорость не скачут при добавлении события.
+После окончания воздействия сохраняется инерция.
+
+После нового события гравитация пересчитывается так, чтобы без следующих событий рейтинг достиг нуля не позднее чем через 730 дней.
+На нуле старый полёт завершается, включая оставшиеся воздействия. Новое событие запускает новый полёт.
+Расчёт аналитический, поэтому время с закрытым приложением учитывается так же, как время с открытым.
+
+Ускорение 0.01 в течение 7 дней — только стартовый пример в форме. Для каждого события силу и длительность можно изменить; перед сохранением показан прогноз на 7 и 30 дней.
+
+## Установка и данные
+
+Открой приложение по HTTPS. В Chrome/Edge нажми «Установить Prime» или используй пункт установки в меню браузера.
+На iPhone: Safari → «Поделиться» → «На экран Домой».
+После первого открытия и загрузки service worker приложение работает офлайн.
+
+История хранится только в localStorage этого браузера, не отправляется на сервер и не синхронизируется между устройствами.
+В разделе «О Prime» доступны экспорт JSON и импорт с подтверждением замены истории.
+Очистка данных сайта удаляет историю; сохраняй экспорт для резервного копирования.
+Время берётся с часов устройства, поэтому они должны быть настроены правильно.
+
+## Разработка
+
+Node.js 22.22.3, npm 10+.
+
+```sh
+npm ci
+npm start
+npm test -- --watch=false
+npm run build -- --base-href /prime-rating/
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Angular standalone, TypeScript, Angular service worker, Vitest.
+Модель находится в `src/app/rating/rating.model.ts`, хранение — в `rating.store.ts`.
+Тесты проверяют непрерывность движения, действие нескольких событий, достижение нуля, длительное отсутствие, проверку файлов и сохранность данных при ошибках записи.
 
-## Code scaffolding
+## Публикация
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Workflow `.github/workflows/pages.yml` запускает тесты, собирает production PWA и публикует артефакт в GitHub Pages при push в main.
+В настройках репозитория Pages должен быть выбран GitHub Actions.
+Спецификация и план находятся в `docs/superpowers/`.

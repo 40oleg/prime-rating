@@ -1,6 +1,12 @@
 import { appendEvent, createData, DAY, evaluate, PrimeEvent, validateData } from './rating.model';
 
-const event = (at = 0, acceleration = 0.01, durationDays = 7, id = 'one'): PrimeEvent => ({ id, name: 'Тренировка', at, acceleration, durationDays });
+const event = (at = 0, acceleration = 0.01, durationDays = 7, id = 'one'): PrimeEvent => ({
+  id,
+  name: 'Тренировка',
+  at,
+  acceleration,
+  durationDays,
+});
 
 describe('rating physics', () => {
   it('starts at ten and falls quadratically to zero in 730 days', () => {
@@ -8,10 +14,16 @@ describe('rating physics', () => {
     expect(evaluate(data, 0).height).toBe(10);
     expect(evaluate(data, 0).velocity).toBe(0);
     expect(evaluate(data, 365 * DAY).height).toBeCloseTo(7.5, 9);
-    expect(evaluate(data, 730 * DAY)).toEqual({height: 0, velocity: 0, acceleration: 0, grounded: true});
+    expect(evaluate(data, 730 * DAY)).toEqual({
+      height: 0,
+      velocity: 0,
+      acceleration: 0,
+      grounded: true,
+    });
   });
   it('changes acceleration without instant points or speed', () => {
-    const data = createData(0), at = 20 * DAY;
+    const data = createData(0),
+      at = 20 * DAY;
     const before = evaluate(data, at);
     const next = appendEvent(data, event(at));
     const after = evaluate(next, at);
@@ -59,15 +71,15 @@ describe('rating physics', () => {
 });
 
 describe('data validation', () => {
-  it.each([NaN, Infinity, -1, 0, 1e300])('rejects invalid acceleration %s', acceleration => {
+  it.each([NaN, Infinity, -1, 0, 1e300])('rejects invalid acceleration %s', (acceleration) => {
     expect(() => appendEvent(createData(0), event(0, acceleration))).toThrow();
   });
-  it.each([NaN, Infinity, -1, 0, 730])('rejects invalid duration %s', duration => {
+  it.each([NaN, Infinity, -1, 0, 730])('rejects invalid duration %s', (duration) => {
     expect(() => appendEvent(createData(0), event(0, 0.01, duration))).toThrow();
   });
   it('rejects unknown formats, invalid timestamps and duplicate IDs', () => {
-    expect(() => validateData({version: 2, startedAt: 0, events: []})).toThrow();
-    expect(() => validateData({version: 1, startedAt: -1, events: []})).toThrow();
+    expect(() => validateData({ version: 2, startedAt: 0, events: [] })).toThrow();
+    expect(() => validateData({ version: 1, startedAt: -1, events: [] })).toThrow();
     expect(() => appendEvent(createData(10), event(0))).toThrow();
     expect(() => appendEvent(appendEvent(createData(0), event()), event())).toThrow();
   });

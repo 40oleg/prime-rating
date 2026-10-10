@@ -3,7 +3,10 @@ import { vi } from 'vitest';
 import { RatingStore } from './rating.store';
 
 describe('RatingStore', () => {
-  beforeEach(() => { localStorage.clear(); TestBed.resetTestingModule(); });
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.resetTestingModule();
+  });
   afterEach(() => vi.restoreAllMocks());
   it('persists start time and restores events after reopening', () => {
     const store = TestBed.inject(RatingStore);
@@ -14,7 +17,8 @@ describe('RatingStore', () => {
     expect(JSON.parse(saved).events[0].name).toBe('Проект');
   });
   it('rejects bad input without changing stored data', () => {
-    const store = TestBed.inject(RatingStore), before = store.exportJson();
+    const store = TestBed.inject(RatingStore),
+      before = store.exportJson();
     expect(() => store.add('Событие', -1, 7)).toThrow();
     expect(store.exportJson()).toBe(before);
   });
@@ -29,8 +33,11 @@ describe('RatingStore', () => {
     expect(store.exportJson()).toBe(saved);
   });
   it('keeps existing data when storage writes fail', () => {
-    const store = TestBed.inject(RatingStore), before = store.exportJson();
-    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('quota'); });
+    const store = TestBed.inject(RatingStore),
+      before = store.exportJson();
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('quota');
+    });
     expect(() => store.add('Событие', 0.01, 7)).toThrow();
     expect(store.exportJson()).toBe(before);
   });

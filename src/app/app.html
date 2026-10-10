@@ -1,9 +1,30 @@
 <div class="shell">
   <header>
-    <a class="brand" href="./" aria-label="Prime, главная"><span class="brand-mark">✳</span> prime<span class="brand-dot">.</span></a>
+    <a class="brand" href="./" aria-label="Prime, главная"
+      ><span class="brand-mark">✳</span> prime<span class="brand-dot">.</span></a
+    >
     <nav aria-label="Действия">
-      <button class="icon-button" (click)="open('history')" aria-label="История событий" title="История событий"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11a9 9 0 1 1 2.7 7M3 5v6h6M12 7v5l3 2"/></svg></button>
-      <button class="icon-button" (click)="open('about')" aria-label="О Prime и настройки" title="О Prime и настройки"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v1"/></svg></button>
+      <button
+        class="icon-button"
+        (click)="open('history')"
+        aria-label="История событий"
+        title="История событий"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 11a9 9 0 1 1 2.7 7M3 5v6h6M12 7v5l3 2" />
+        </svg>
+      </button>
+      <button
+        class="icon-button"
+        (click)="open('about')"
+        aria-label="О Prime и настройки"
+        title="О Prime и настройки"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 11v6M12 7v1" />
+        </svg>
+      </button>
     </nav>
   </header>
   <main>
@@ -13,58 +34,205 @@
       <h1 class="rating" data-testid="rating">{{ formatted() }}</h1>
       <div class="direction" [class.rising]="state().velocity > 0">
         <span class="status-dot"></span>
-        @if (state().grounded) { Покой · начни новую траекторию }
-        @else if (state().velocity > 0.00000001) { <span>↗</span> Набираешь высоту }
-        @else if (state().velocity < -0.00000001) { <span>↘</span> Плавное снижение }
-        @else { Начало траектории }
+        @if (state().grounded) {
+          Покой · начни новую траекторию
+        } @else if (state().velocity > 0.00000001) {
+          <span>↗</span> Набираешь высоту
+        } @else if (state().velocity < -0.00000001) {
+          <span>↘</span> Плавное снижение
+        } @else {
+          Начало траектории
+        }
       </div>
-      <button class="primary add-button" (click)="open('event')"><span aria-hidden="true">＋</span> Добавить событие</button>
+      <button class="primary add-button" (click)="open('event')">
+        <span aria-hidden="true">＋</span> Добавить событие
+      </button>
       <p class="caption">Каждое хорошее событие задаёт движение.</p>
-      @if (store.error()) {<p class="error global-error" role="alert">{{ store.error() }}</p>}
+      @if (store.error()) {
+        <p class="error global-error" role="alert">{{ store.error() }}</p>
+      }
     </section>
   </main>
-  <footer><span><span class="tiny-dot"></span> Твой темп. Твоя траектория.</span>
-    @if (!standalone()) {<button class="text-button" (click)="install()">Установить Prime <span aria-hidden="true">↗</span></button>}
-    @else {<span class="quiet">Личный prime-рейтинг</span>}
+  <footer>
+    <span><span class="tiny-dot"></span> Твой темп. Твоя траектория.</span>
+    @if (!standalone()) {
+      <button class="text-button" (click)="install()">
+        Установить Prime <span aria-hidden="true">↗</span>
+      </button>
+    } @else {
+      <span class="quiet">Личный prime-рейтинг</span>
+    }
   </footer>
 </div>
 <dialog #dialog (click)="$event.target === dialog && close()">
   <div class="dialog-content">
     <button class="close icon-button" (click)="close()" aria-label="Закрыть">×</button>
     @if (mode() === 'event') {
-      <p class="eyebrow">НОВЫЙ ИМПУЛЬС</p><h2>Хорошее событие</h2>
-      <p class="intro">Задай ему силу и время действия.<br>Рейтинг изменится плавно, через ускорение.</p>
+      <p class="eyebrow">НОВЫЙ ИМПУЛЬС</p>
+      <h2>Хорошее событие</h2>
+      <p class="intro">
+        Задай ему силу и время действия.<br />Рейтинг изменится плавно, через ускорение.
+      </p>
       <form (ngSubmit)="save()" novalidate>
         <label for="event-name">Что произошло?</label>
-        <input id="event-name" name="name" [(ngModel)]="name" maxlength="120" placeholder="Например, закончил важный проект" autofocus [attr.aria-invalid]="submitted && fieldErrors.name" aria-describedby="name-error">
-        @if (submitted && fieldErrors.name) {<p id="name-error" class="error">Добавь название, до 120 символов.</p>}
+        <input
+          id="event-name"
+          name="name"
+          [(ngModel)]="name"
+          maxlength="120"
+          placeholder="Например, закончил важный проект"
+          autofocus
+          [attr.aria-invalid]="submitted && fieldErrors.name"
+          aria-describedby="name-error"
+        />
+        @if (submitted && fieldErrors.name) {
+          <p id="name-error" class="error">Добавь название, до 120 символов.</p>
+        }
         <div class="form-grid">
-          <div><label for="strength">Ускорение вверх</label><div class="input-unit"><input id="strength" name="strength" type="number" step="any" [(ngModel)]="strength" [attr.aria-invalid]="submitted && fieldErrors.strength" aria-describedby="strength-hint strength-error"><span>балл/день²</span></div><p id="strength-hint" class="hint">Больше число — сильнее воздействие.</p>
-          @if (submitted && fieldErrors.strength) {<p id="strength-error" class="error">Укажи число больше 0 и до 1 000 000.</p>}</div>
-          <div><label for="duration">Длительность</label><div class="input-unit"><input id="duration" name="duration" type="number" step="any" [(ngModel)]="duration" [attr.aria-invalid]="submitted && fieldErrors.duration" aria-describedby="duration-hint duration-error"><span>дней</span></div><p id="duration-hint" class="hint">Любое число больше 0 и меньше 730.</p>
-          @if (submitted && fieldErrors.duration) {<p id="duration-error" class="error">Длительность должна быть между 0 и 730.</p>}</div>
+          <div>
+            <label for="strength">Ускорение вверх</label>
+            <div class="input-unit">
+              <input
+                id="strength"
+                name="strength"
+                type="number"
+                step="any"
+                [(ngModel)]="strength"
+                [attr.aria-invalid]="submitted && fieldErrors.strength"
+                aria-describedby="strength-hint strength-error"
+              /><span>балл/день²</span>
+            </div>
+            <p id="strength-hint" class="hint">Больше число — сильнее воздействие.</p>
+            @if (submitted && fieldErrors.strength) {
+              <p id="strength-error" class="error">Укажи число больше 0 и до 1 000 000.</p>
+            }
+          </div>
+          <div>
+            <label for="duration">Длительность</label>
+            <div class="input-unit">
+              <input
+                id="duration"
+                name="duration"
+                type="number"
+                step="any"
+                [(ngModel)]="duration"
+                [attr.aria-invalid]="submitted && fieldErrors.duration"
+                aria-describedby="duration-hint duration-error"
+              /><span>дней</span>
+            </div>
+            <p id="duration-hint" class="hint">Любое число больше 0 и меньше 730.</p>
+            @if (submitted && fieldErrors.duration) {
+              <p id="duration-error" class="error">Длительность должна быть между 0 и 730.</p>
+            }
+          </div>
         </div>
-        @if (forecast; as f) {<div class="forecast"><span>Без следующих событий</span><div><p><strong>{{ f.week }}</strong><small>через 7 дней</small></p><p><strong>{{ f.month }}</strong><small>через 30 дней</small></p></div></div>}
-        @if (message) {<p class="error" role="alert">{{ message }}</p>}
-        <button class="primary full" type="submit">Сохранить событие <span aria-hidden="true">↗</span></button>
+        @if (forecast; as f) {
+          <div class="forecast">
+            <span>Без следующих событий</span>
+            <div>
+              <p>
+                <strong>{{ f.week }}</strong
+                ><small>через 7 дней</small>
+              </p>
+              <p>
+                <strong>{{ f.month }}</strong
+                ><small>через 30 дней</small>
+              </p>
+            </div>
+          </div>
+        }
+        @if (message) {
+          <p class="error" role="alert">{{ message }}</p>
+        }
+        <button class="primary full" type="submit">
+          Сохранить событие <span aria-hidden="true">↗</span>
+        </button>
       </form>
     }
     @if (mode() === 'history') {
-      <p class="eyebrow">ТВОЯ ТРАЕКТОРИЯ</p><h2>История событий</h2>
-      @if (reversedEvents().length === 0) {<div class="empty"><span>↗</span><h3>Всё начинается с события</h3><p>Отметь то, что придало тебе сил.</p><button class="primary" (click)="mode.set('event')">Добавить событие</button></div>}
-      @else {<ul class="history">@for (event of reversedEvents(); track event.id) {<li><span class="event-sign">↗</span><div><h3>{{ event.name }}</h3><p>{{ date(event.at) }} · {{ event.durationDays }} дней</p></div><span class="event-strength">+{{ event.acceleration }}<small>балл/день²</small></span></li>}</ul>}
+      <p class="eyebrow">ТВОЯ ТРАЕКТОРИЯ</p>
+      <h2>История событий</h2>
+      @if (reversedEvents().length === 0) {
+        <div class="empty">
+          <span>↗</span>
+          <h3>Всё начинается с события</h3>
+          <p>Отметь то, что придало тебе сил.</p>
+          <button class="primary" (click)="mode.set('event')">Добавить событие</button>
+        </div>
+      } @else {
+        <ul class="history">
+          @for (event of reversedEvents(); track event.id) {
+            <li>
+              <span class="event-sign">↗</span>
+              <div>
+                <h3>{{ event.name }}</h3>
+                <p>{{ date(event.at) }} · {{ event.durationDays }} дней</p>
+              </div>
+              <span class="event-strength">+{{ event.acceleration }}<small>балл/день²</small></span>
+            </li>
+          }
+        </ul>
+      }
     }
     @if (mode() === 'about') {
-      <p class="eyebrow">СОБСТВЕННЫЙ ТЕМП</p><h2>О Prime</h2>
-      <p class="intro">Твоя форма — в движении. События задают ускорение, инерция сохраняет скорость, время тянет вниз.</p>
-      <div class="info-card"><p>Старт — <strong>10</strong>. События не начисляют баллы сразу. Их сила и длительность задаются вручную.</p><p>Без новых событий рейтинг достигнет нуля не позднее чем через <strong>730 дней</strong> после последнего. На нуле прежние воздействия прекращаются.</p></div>
-      <h3>Твои данные</h3><p class="intro small">История хранится только в этом браузере. Сохрани файл перед очисткой данных или переносом на другое устройство.</p>
-      <div class="data-actions"><button class="secondary" (click)="export()">Экспорт истории ↓</button><label class="secondary file-label">Импорт истории ↑<input type="file" accept=".json,application/json" (change)="selectImport($event)" aria-label="Импорт истории"></label></div>
-      @if (importText) {<div class="info-card"><p>Файл «{{ importName }}» заменит текущую историю.</p><button class="secondary" (click)="confirmImport()">Подтвердить замену</button><button class="text-button" (click)="importText = ''">Отмена</button></div>}
-      @if (message) {<p class="message" role="status">{{ message }}</p>}
-      @if (!standalone()) {<h3>Установка</h3><p class="intro small">В Chrome или Edge: меню браузера → «Установить приложение». На iPhone: Safari → «Поделиться» → «На экран Домой». После первого открытия Prime работает офлайн.</p>
-        @if (installPrompt()) {<button class="primary full" (click)="install()">Установить Prime</button>}}
-      <a class="source-link" href="https://github.com/40oleg/prime-rating" target="_blank" rel="noopener">Исходный код ↗</a>
+      <p class="eyebrow">СОБСТВЕННЫЙ ТЕМП</p>
+      <h2>О Prime</h2>
+      <p class="intro">
+        Твоя форма — в движении. События задают ускорение, инерция сохраняет скорость, время тянет
+        вниз.
+      </p>
+      <div class="info-card">
+        <p>
+          Старт — <strong>10</strong>. События не начисляют баллы сразу. Их сила и длительность
+          задаются вручную.
+        </p>
+        <p>
+          Без новых событий рейтинг достигнет нуля не позднее чем через
+          <strong>730 дней</strong> после последнего. На нуле прежние воздействия прекращаются.
+        </p>
+      </div>
+      <h3>Твои данные</h3>
+      <p class="intro small">
+        История хранится только в этом браузере. Сохрани файл перед очисткой данных или переносом на
+        другое устройство.
+      </p>
+      <div class="data-actions">
+        <button class="secondary" (click)="export()">Экспорт истории ↓</button
+        ><label class="secondary file-label"
+          >Импорт истории ↑<input
+            type="file"
+            accept=".json,application/json"
+            (change)="selectImport($event)"
+            aria-label="Импорт истории"
+        /></label>
+      </div>
+      @if (importText) {
+        <div class="info-card">
+          <p>Файл «{{ importName }}» заменит текущую историю.</p>
+          <button class="secondary" (click)="confirmImport()">Подтвердить замену</button
+          ><button class="text-button" (click)="importText = ''">Отмена</button>
+        </div>
+      }
+      @if (message) {
+        <p class="message" role="status">{{ message }}</p>
+      }
+      @if (!standalone()) {
+        <h3>Установка</h3>
+        <p class="intro small">
+          В Chrome или Edge: меню браузера → «Установить приложение». На iPhone: Safari →
+          «Поделиться» → «На экран Домой». После первого открытия Prime работает офлайн.
+        </p>
+        @if (installPrompt()) {
+          <button class="primary full" (click)="install()">Установить Prime</button>
+        }
+      }
+      <a
+        class="source-link"
+        href="https://github.com/40oleg/prime-rating"
+        target="_blank"
+        rel="noopener"
+        >Исходный код ↗</a
+      >
     }
   </div>
 </dialog>
