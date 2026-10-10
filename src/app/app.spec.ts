@@ -3,6 +3,7 @@ import { App } from './app';
 
 describe('App', () => {
   beforeEach(async () => {
+    localStorage.clear();
     await TestBed.configureTestingModule({
       imports: [App],
     })
@@ -15,10 +16,11 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render title', async () => {
+  it('renders the rating and the event action', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, prime-rating');
+    expect(compiled.querySelector('[data-testid="rating"]')?.textContent).toContain('10');
+    expect(compiled.textContent).toContain('Добавить событие');
   });
 });
