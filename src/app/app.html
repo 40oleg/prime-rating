@@ -27,45 +27,15 @@
       </button>
     </nav>
   </header>
-  <div class="design-choices" role="group" aria-label="Варианты дизайна">
-    <button
-      (click)="setDesign('orbit')"
-      [attr.aria-pressed]="design() === 'orbit'"
-      data-testid="design-orbit"
-    >
-      <span>01</span> Траектория
-    </button>
-    <button
-      (click)="setDesign('studio')"
-      [attr.aria-pressed]="design() === 'studio'"
-      data-testid="design-studio"
-    >
-      <span>02</span> Ателье
-    </button>
-    <button
-      (click)="setDesign('console')"
-      [attr.aria-pressed]="design() === 'console'"
-      data-testid="design-console"
-    >
-      <span>03</span> Телеметрия
-    </button>
-  </div>
   <main>
     <div class="ambient" aria-hidden="true"></div>
     <div class="dashboard">
       <section class="rating-section" aria-label="Текущий prime-рейтинг">
         <p class="eyebrow">ТВОЯ ТЕКУЩАЯ ФОРМА</p>
-        @if (design() === 'studio') {
-          <p class="editorial-heading">Каждый день.<br />Чуть ближе к себе.</p>
-        }
         <div class="rating-display">
-          @if (design() === 'console') {
-            <div class="instrument-ring" aria-hidden="true"><span></span></div>
-          }
+          <div class="instrument-ring" aria-hidden="true"><span></span></div>
           <h1 class="rating" data-testid="rating">{{ formatted() }}</h1>
-          @if (design() === 'console') {
-            <span class="instrument-unit">PRIME / БАЛЛЫ</span>
-          }
+          <span class="instrument-unit">PRIME / БАЛЛЫ</span>
         </div>
         <div class="direction" [class.rising]="state().velocity > 0">
           <span class="status-dot"></span>

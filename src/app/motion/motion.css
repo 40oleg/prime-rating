@@ -192,40 +192,6 @@
   line-height: 1.6;
   max-width: 490px;
 }
-:host-context([data-design='studio']) .motion-heading {
-  margin-bottom: 28px;
-}
-:host-context([data-design='studio']) .metrics {
-  grid-template-columns: 1fr;
-  gap: 0;
-}
-:host-context([data-design='studio']) .metric {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: baseline;
-  padding: 20px 0;
-  border-top: 1px solid var(--line);
-}
-:host-context([data-design='studio']) .metric strong {
-  grid-column: 2;
-  grid-row: 1;
-  font-size: 30px;
-}
-:host-context([data-design='studio']) .unit {
-  grid-column: 2;
-  text-align: right;
-}
-:host-context([data-design='studio']) .metric-note {
-  grid-column: 1;
-  grid-row: 2;
-  margin: 0;
-}
-:host-context([data-design='studio']) .force-balance {
-  margin-top: 18px;
-}
-:host-context([data-design='studio']) .balance-track {
-  height: 6px;
-}
 :host-context([data-design='console']) .motion-panel {
   padding: 28px;
   background: var(--surface);
@@ -263,9 +229,6 @@
   }
   .metric strong {
     font-size: clamp(14px, 4.2vw, 21px);
-  }
-  :host-context([data-design='studio']) .metric strong {
-    font-size: clamp(17px, 5vw, 25px);
   }
   :host-context([data-design='console']) .motion-panel {
     padding: 20px;

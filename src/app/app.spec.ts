@@ -102,18 +102,14 @@ describe('App', () => {
     expect(fixture.nativeElement.querySelector('[data-testid="countdown"]')).toBeNull();
     fixture.destroy();
   });
-  it('switches all three designs without changing rating history', () => {
+  it('uses the chosen console design even with an old saved preference', () => {
+    localStorage.setItem('prime-design:v1', 'studio');
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     const root = fixture.nativeElement as HTMLElement;
-    const history = fixture.componentInstance.store.exportJson();
-    for (const design of ['studio', 'console', 'orbit']) {
-      (root.querySelector(`[data-testid="design-${design}"]`) as HTMLButtonElement).click();
-      fixture.detectChanges();
-      expect(root.getAttribute('data-design')).toBe(design);
-      expect(fixture.componentInstance.store.exportJson()).toBe(history);
-      expect(localStorage.getItem('prime-design:v1')).toBe(design);
-    }
+    expect(root.getAttribute('data-design')).toBe('console');
+    expect(root.querySelector('.design-choices')).toBeNull();
+    expect(root.querySelector('.instrument-ring')).toBeTruthy();
     fixture.destroy();
   });
 });
