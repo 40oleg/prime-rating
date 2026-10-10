@@ -48,4 +48,22 @@ describe('RatingStore', () => {
     expect(() => store.add('Событие', 0.01, 7)).toThrow();
     expect(localStorage.getItem('prime-rating:v1')).toBe('{broken');
   });
+  it('refuses a stale tab write and preserves the other tabs event', () => {
+    const a = TestBed.inject(RatingStore);
+    TestBed.resetTestingModule();
+    const b = TestBed.inject(RatingStore);
+    a.add('Из окна A', 0.01, 7);
+    expect(() => b.add('Из окна B', 0.01, 7)).toThrow();
+    expect(
+      JSON.parse(localStorage.getItem('prime-rating:v1')!).events.map(
+        (e: { name: string }) => e.name,
+      ),
+    ).toEqual(['Из окна A']);
+    b.add('Из окна B', 0.01, 7);
+    expect(
+      JSON.parse(localStorage.getItem('prime-rating:v1')!).events.map(
+        (e: { name: string }) => e.name,
+      ),
+    ).toEqual(['Из окна A', 'Из окна B']);
+  });
 });

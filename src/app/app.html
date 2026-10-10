@@ -73,7 +73,7 @@
       <p class="intro">
         Задай ему силу и время действия.<br />Рейтинг изменится плавно, через ускорение.
       </p>
-      <form (ngSubmit)="save()" novalidate>
+      <form (ngSubmit)="save()" (keydown.enter)="$event.preventDefault(); save()" novalidate>
         <label for="event-name">Что произошло?</label>
         <input
           id="event-name"
@@ -144,7 +144,7 @@
         @if (message) {
           <p class="error" role="alert">{{ message }}</p>
         }
-        <button class="primary full" type="submit">
+        <button class="primary full" type="button" data-testid="save-event" (click)="save()">
           Сохранить событие <span aria-hidden="true">↗</span>
         </button>
       </form>
