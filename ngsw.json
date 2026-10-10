@@ -1,0 +1,77 @@
+{
+  "configVersion": 1,
+  "timestamp": 1791652265696,
+  "index": "/prime-rating/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/prime-rating/favicon.ico",
+        "/prime-rating/index.html",
+        "/prime-rating/main-E5AIXJPC.js",
+        "/prime-rating/manifest.webmanifest",
+        "/prime-rating/styles-GKQEZ4CZ.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/prime-rating/icons/icon-128x128.png",
+        "/prime-rating/icons/icon-144x144.png",
+        "/prime-rating/icons/icon-152x152.png",
+        "/prime-rating/icons/icon-192x192.png",
+        "/prime-rating/icons/icon-384x384.png",
+        "/prime-rating/icons/icon-512x512.png",
+        "/prime-rating/icons/icon-72x72.png",
+        "/prime-rating/icons/icon-96x96.png"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/prime-rating/favicon.ico": "9c39f434fe1261f68c5e3eefdf734630d99c5670",
+    "/prime-rating/icons/icon-128x128.png": "9653910824a0829ec884d8e3f5c406786c06a10a",
+    "/prime-rating/icons/icon-144x144.png": "a742b69bf59a3f0f867dc17a25d52dad671e7265",
+    "/prime-rating/icons/icon-152x152.png": "cf89c36b7a39472044c25286eaeed5ab636ae09a",
+    "/prime-rating/icons/icon-192x192.png": "cf141a0efdfef1bc069e5d8137bb436c2aada49e",
+    "/prime-rating/icons/icon-384x384.png": "68ac3fc4ad991f31d1556015cf1b2352b9e3003e",
+    "/prime-rating/icons/icon-512x512.png": "33807c125a9e014dc11a7653b68d4f59f9df3bbe",
+    "/prime-rating/icons/icon-72x72.png": "b8e7a52f6c0367cd49dd3eacb29eded8a5e0f446",
+    "/prime-rating/icons/icon-96x96.png": "dbb9e50c6e99d3ce6c29a6c5c5545c05e9c36c9c",
+    "/prime-rating/index.html": "22cf23dfa67218820b18021289b8f8a317f10ce8",
+    "/prime-rating/main-E5AIXJPC.js": "6a6ad8bca4842d917fbc173df11e6e4d2eceff3b",
+    "/prime-rating/manifest.webmanifest": "ec60a258b8d5b13a61bc36fb78dfb596a6d7da2b",
+    "/prime-rating/styles-GKQEZ4CZ.css": "332540ef4636157cd97a7ce7cca383eeba6bfe1e"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ],
+  "navigationRequestStrategy": "performance"
+}
